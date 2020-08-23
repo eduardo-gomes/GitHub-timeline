@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Github Timeline</title>
+	<script type="module">
+		import { Octokit } from "https://cdn.pika.dev/@octokit/rest";
+	</script>
+	<script src="./js.js" type="module"></script>
+</head>
+<body>
+	<h1>Github timeline</h1>
+	<input type="text" id="username">
+	<button>Get</button>
+	<div id="user"></div>
+	<div id="repos"></div>
+</body>
+</html>
