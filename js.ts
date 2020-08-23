@@ -1,7 +1,13 @@
-import { Octokit } from "https://cdn.pika.dev/@octokit/rest";
+//import { Octokit } from "https://cdn.pika.dev/@octokit/rest";
+import { Octokit } from "@octokit/rest";
 const octokit = new Octokit();
 
-function getUser(user){
+type UserNameObj =
+	{'username': string }| undefined;
+type RepoObj = {created_at:string, name:string};
+type UserObj = {avatar_url:string, name:string};
+
+function getUser(user:UserNameObj){
 	ClearRepoDiv();
 	const userObj = octokit.users.getByUsername(user);
 	userObj.then(function(value){
@@ -18,7 +24,7 @@ function getUser(user){
 	userRepos.then(function (value) {
 		console.log("deu certo")
 		console.log(value.data);
-		value.data.map((repo) => {
+		value.data.map((repo: RepoObj) => {
 			AddRepoHtmlToDiv(
 				RepoObjToHtml(repo)
 			)
@@ -27,14 +33,14 @@ function getUser(user){
 		console.log("can't find user")
 	})
 
-	function RepoObjToHtml(repo){
+	function RepoObjToHtml(repo: RepoObj){
 		const {created_at, name} = repo;
 		return(
 			`<p>Repo: ${name}, Created at: ${created_at}</p>`
 		);
 	}
 
-	function userToHtml(user){
+	function userToHtml(user:UserObj){
 		const {name, avatar_url} = user;
 		return(
 			`
@@ -44,20 +50,20 @@ function getUser(user){
 		);
 	}
 
-	function AddRepoHtmlToDiv(repoHtml){
+	function AddRepoHtmlToDiv(repoHtml:string){
 		document.getElementById('repos').innerHTML += repoHtml;
 	}
-	function ClearRepoDiv(repoHtml) {
+	function ClearRepoDiv() {
 		document.getElementById('repos').innerHTML = "";
 	}
-	function SetUserHtmlToDiv(userHtml) {
+	function SetUserHtmlToDiv(userHtml:string) {
 		document.getElementById('user').innerHTML = userHtml;
 	}
 }
 
 function OnButtonClick(){
 
-	const username = document.getElementById('username').value;
+	const username:string = document.getElementById('username').value;
 	const user = { 'username': username };
 	getUser(user);
 }
