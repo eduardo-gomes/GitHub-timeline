@@ -1,13 +1,24 @@
-//import { Octokit } from "https://cdn.pika.dev/@octokit/rest";
-import { Octokit } from "@octokit/rest";
+/// <reference path="import.d.ts" />
+import { Octokit } from 'https://cdn.pika.dev/@octokit/rest';
 const octokit = new Octokit();
 
 type UserNameObj =
-	{'username': string }| undefined;
+{'username': string }| undefined;
 type RepoObj = {created_at:string, name:string};
 type UserObj = {avatar_url:string, name:string};
 
 function getUser(user:UserNameObj){
+	const ReposElement = document.getElementById('repos') as HTMLElement, UserElement = document.getElementById('user') as HTMLElement;
+	function AddRepoHtmlToDiv(repoHtml:string){
+		ReposElement.innerHTML += repoHtml;
+	}
+	function ClearRepoDiv() {
+		ReposElement.innerHTML = "";
+	}
+	function SetUserHtmlToDiv(userHtml:string) {
+		UserElement.innerHTML = userHtml;
+	}
+	
 	ClearRepoDiv();
 	const userObj = octokit.users.getByUsername(user);
 	userObj.then(function(value){
@@ -49,23 +60,16 @@ function getUser(user:UserNameObj){
 			`
 		);
 	}
-
-	function AddRepoHtmlToDiv(repoHtml:string){
-		document.getElementById('repos').innerHTML += repoHtml;
-	}
-	function ClearRepoDiv() {
-		document.getElementById('repos').innerHTML = "";
-	}
-	function SetUserHtmlToDiv(userHtml:string) {
-		document.getElementById('user').innerHTML = userHtml;
-	}
 }
 
 function OnButtonClick(){
 
-	const username:string = document.getElementById('username').value;
+	const usernameElement = document.getElementById('username') as HTMLInputElement
+	const username = usernameElement.value;
 	const user = { 'username': username };
 	getUser(user);
 }
 getUser({ 'username': 'eduardo-gomes' });
-document.querySelector('button').addEventListener('click', OnButtonClick);
+
+const GetButton = document.querySelector('button') as HTMLButtonElement;
+GetButton.addEventListener('click', OnButtonClick);

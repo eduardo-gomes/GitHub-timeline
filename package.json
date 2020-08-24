@@ -2,9 +2,9 @@
   "name": "github-timeline",
   "version": "1.0.0",
   "description": "A simple app to generate an timeline of a GitHub user's repos",
-  "main": "js.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+	"test": "echo \"Error: no test specified\" && exit 1",
+	"build": "tsc"
   },
   "repository": {
     "type": "git",
