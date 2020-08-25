@@ -4,8 +4,8 @@ const octokit = new Octokit();
 
 type UserNameObj =
 {'username': string }| undefined;
-type RepoObj = {created_at:string, name:string};
-type UserObj = {avatar_url:string, name:string};
+type RepoObj = {created_at:string, name:string, description:string, language:string, updated_at:string, license:object, stargazers_count:number};
+type UserObj = {avatar_url:string, name:string, login:string, location:string, bio:string|null, html_url:string};
 
 function getUser(user:UserNameObj){
 	const ReposElement = document.getElementById('repos') as HTMLElement, UserElement = document.getElementById('user') as HTMLElement;
@@ -45,18 +45,39 @@ function getUser(user:UserNameObj){
 	})
 
 	function RepoObjToHtml(repo: RepoObj){
-		const {created_at, name} = repo;
+		const { created_at, name, description, language, updated_at, stargazers_count } = repo;
 		return(
-			`<p>Repo: ${name}, Created at: ${created_at}</p>`
+			`
+			<div>
+				<header>Repo: ${name}, Created at: ${created_at}</header>
+				<main>description ${description}</main>
+				<footer>
+					<spam>language ${language}</spam>
+					<spam>stars ${stargazers_count}</spam>
+					<spam>updated_at ${updated_at}</spam>
+				</footer>
+			</div>
+			`
 		);
 	}
 
 	function userToHtml(user:UserObj){
-		const {name, avatar_url} = user;
+		function getBioHtml(bio: string| null){
+			if (bio != null)
+				return `<main>${bio}</main>`;
+			else return '';
+		}
+		
+		const { name, avatar_url, login, location, bio, html_url} = user;
 		return(
 			`
-			<h2>${name}</h2>
 			<img src="${avatar_url}">
+			<span>
+			<h2>${name}</h2>
+			<p><a href="${html_url}">${login}</a></p>
+			<p>${location}</p>
+			</span>
+			${getBioHtml(bio)}
 			`
 		);
 	}
