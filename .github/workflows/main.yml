@@ -1,0 +1,32 @@
+name: Deploy
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      
+    - name: npm install
+      run: npm install
+      
+    - name: build
+      run: npm run-script build
+
+    - name: Copy out files via scp
+      uses: appleboy/scp-action@master
+      env:
+        HOST: ${{ secrets.HOST }}
+        USERNAME: ${{ secrets.USERNAME }}
+        PORT: ${{ secrets.PORT }}
+        KEY: ${{ secrets.SSHKEY }}
+      with:
+        source: "out/*"
+        target: "/var/www/html/GitHub-timeline"
+        strip_components: 1
+        overwrite: true
