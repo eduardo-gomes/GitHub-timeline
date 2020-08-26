@@ -1,23 +1,62 @@
-div#user{
+:root{
+	--main-bg-color: #DCDCDD;
+	--repo-inner-border: #C5C3C6;
+	--border-color: #123f4b;
+	--link-color: #006064;
+	--border-thin-size: 1px;
+	--border-size: 2px;
+	--border-radius: 20px;
+}
+
+a{
+	color: var(--link-color);
+	text-decoration-line: none;
+}
+
+body{
+	font-family: 'Roboto', sans-serif;
+	background-color: var(--main-bg-color);
+}
+
+body > *{
+	margin-left:auto;
+	margin-right:auto;
+	display: flex;
+}
+
+h1{
+	justify-content: center;
+}
+
+#search{
 	max-width: 600px;
-	margin: 10px;
-	border-color: black;
-	border-radius: 10px;
-	border: solid;
+	justify-content: space-evenly;
+	align-items: center;
+	padding-top: 1rem;
+	padding-bottom: 1rem;
+}
+
+#user-container{
+	max-width: 600px;
+}
+#user{
+	border-color: var(--border-color);
+	border-radius: var(--border-radius);
+	border-width: var(--border-size);
+	border-style: solid;
 
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr;
-	grid-template-rows: fit-content(20rem) auto;
+	grid-template-rows: fit-content(18rem) auto;
 }
 
-div#user img{
+#user img{
 	max-width: 90%;
-	min-height: 90%;
 	margin: 5%;
 	border-radius: 50%;
 }
 
-div#user span{
+#user span{
 	grid-column: 2 / 4;
 	grid-row: 1;
 	display: flex;
@@ -26,29 +65,67 @@ div#user span{
 	margin: 1rem;
 }
 
-div#user p{
+#user p{
 	margin-top: 0.5rem;
 	margin-bottom: 0.5rem;
 }
 
-div#user main{
+#user main{
 	grid-column: 1 / 4;
 	grid-row: 2;
+	margin-top: 0.8rem;
+	margin-bottom: 1rem;
+	padding-left: 6px;
 }
 
-div#repos{
+#repos{
 	max-width: 600px;
-	display: flex;
 	flex-direction: column;
 }
-div#repos div{
-	margin: 10px;
-	border-color: black;
-	border-radius: 10px;
-	border: solid;
+#repos div{
+	margin-top: 10px;
+	margin-bottom: 10px;
+	border-color: var(--border-color);
+	border-radius: var(--border-radius);
+	border-width: var(--border-size);
+	border-style: solid;
+}
+#repos div > *{
+	padding-left: 6px;
+	padding-right: 6px;
 }
 
-div#repos footer{
+#repos header{
+	height: 3rem;
 	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	border-bottom: var(--border-thin-size) solid var(--repo-inner-border);
+}
+
+.repo-name{
+	font-size: 1.6rem;
+}
+.repo-name span{
+	font-size: 1rem;
+	margin-left: 1rem;
+}
+
+#repos main{
+	padding-top: .5rem;
+	padding-bottom: .5rem;
+	display: flex;
+	align-items: center;
+}
+#repos header + footer{ /* when there is no description */
+	border-top: 0;
+}
+
+#repos footer{
+	font-size: 0.8rem;
+	height: 1.6rem;
+	display: flex;
+	align-items: center;
 	justify-content: space-evenly;
+	border-top: var(--border-thin-size) solid var(--repo-inner-border);
 }

@@ -1,19 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Github Timeline</title>
 	<link rel="prefetch" href="./js.js" />
+	<link rel="prefetch" href="./demo.js" />
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap" rel="stylesheet">
 	<link rel="prefetch" href="https://cdn.pika.dev/@octokit/rest" />
 	<link rel="stylesheet" type="text/css" href="styles.css">
 </head>
+
 <body>
 	<h1>Github timeline</h1>
-	<input type="text" id="username">
-	<button>Get</button>
-	<div id="user"></div>
+	<div id="search">
+		<form id="search-form">
+			<label> Search GitHub User
+				<input type="text" id="username" placeholder="eduardo-gomes">
+			</label>
+			<button type="submit">Search</button>
+		</form>
+	</div>
+	<div id="user-container">
+		<div id="user"></div>
+	</div>
 	<div id="repos"></div>
 </body>
-	<script type="module" src="./js.js"></script>
+<script type="module" src="./js.js"></script>
+
 </html>

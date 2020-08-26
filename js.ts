@@ -1,75 +1,107 @@
 /// <reference path="import.d.ts" />
 import { Octokit } from 'https://cdn.pika.dev/@octokit/rest';
+import { reposJSON, userJSON } from './demo.js';
 const octokit = new Octokit();
 
-type UserNameObj =
-{'username': string }| undefined;
-type RepoObj = {created_at:string, name:string, description:string, language:string, updated_at:string, license:object, stargazers_count:number};
-type UserObj = {avatar_url:string, name:string, login:string, location:string, bio:string|null, html_url:string};
-
-function getUser(user:UserNameObj){
+function getUser(user: UserNameObj) {
 	const ReposElement = document.getElementById('repos') as HTMLElement, UserElement = document.getElementById('user') as HTMLElement;
-	function AddRepoHtmlToDiv(repoHtml:string){
+	function AddRepoHtmlToDiv(repoHtml: string) {
 		ReposElement.innerHTML += repoHtml;
 	}
 	function ClearRepoDiv() {
 		ReposElement.innerHTML = "";
 	}
-	function SetUserHtmlToDiv(userHtml:string) {
+	function SetUserHtmlToDiv(userHtml: string) {
 		UserElement.innerHTML = userHtml;
 	}
-	
-	ClearRepoDiv();
-	const userObj = octokit.users.getByUsername(user);
-	userObj.then(function(value){
-		console.log("deu certo")
-		console.log(value.data);
-		SetUserHtmlToDiv(
-			userToHtml(value.data)
-		);
-	}, function (value) {
-		console.log("can't find user")
-	})
+	function compareRepoDate(a: RepoObj, b: RepoObj) {
+		const DateA = new Date(a.created_at);
+		const DateB = new Date(b.created_at);
+		return DateB.getTime() - DateA.getTime();
+	}
 
-	const userRepos = octokit.repos.listForUser(user);
-	userRepos.then(function (value) {
-		console.log("deu certo")
-		console.log(value.data);
-		value.data.map((repo: RepoObj) => {
+	ClearRepoDiv();
+	if (user == undefined) {
+		const user: any = userJSON;
+		handleUserResponse(user);
+		const repo: any = reposJSON;
+		handleRepoResponse(repo);
+	} else {
+		const userObj = octokit.users.getByUsername(user);
+		userObj.then(function (value) {
+			console.log("deu certo")
+			console.log(value.data);
+			handleUserResponse(value.data);
+		}, function (value) {
+			console.log("can't find user")
+		})
+
+		const userRepos = octokit.repos.listForUser(user);
+		userRepos.then(function (value) {
+			console.log("deu certo")
+			console.log(value.data);
+			handleRepoResponse(value.data);
+		}, function (value) {
+			console.log("can't find user")
+		})
+	}
+
+	function handleUserResponse(user: UserObj) {
+		SetUserHtmlToDiv(
+			userToHtml(user)
+		);
+	}
+	function handleRepoResponse(RepoArray: Array<RepoObj>) {
+		RepoArray.sort(compareRepoDate);
+		RepoArray.map((repo: RepoObj) => {
 			AddRepoHtmlToDiv(
 				RepoObjToHtml(repo)
 			)
 		});
-	}, function (value) {
-		console.log("can't find user")
-	})
+	}
 
-	function RepoObjToHtml(repo: RepoObj){
-		const { created_at, name, description, language, updated_at, stargazers_count } = repo;
-		return(
+	function RepoObjToHtml(repo: RepoObj) {
+		function genHeader(name: string, url: string, created_at: string) {
+			const data = new Date(created_at);
+			const isFork = repo.fork ? "<span>is a fork</span>" : "";
+			return (`
+				<header>
+					<p class="repo-name"><a href="${html_url}">${name}</a>${isFork}</p>
+					<p class="repo-creation">Created: ${data.toDateString()}</p>
+				</header>
+			`);
+		}
+		function genDescription(desc: string | null) {
+			if (desc != null)
+				return `<main>${desc}</main>`;
+			else return '';
+		}
+
+		const { created_at, name, description, language, updated_at, stargazers_count, html_url } = repo;
+		return (
 			`
 			<div>
-				<header>Repo: ${name}, Created at: ${created_at}</header>
-				<main>description ${description}</main>
+				${genHeader(name, html_url, created_at)}
+				${genDescription(description)}
 				<footer>
 					<spam>language ${language}</spam>
 					<spam>stars ${stargazers_count}</spam>
-					<spam>updated_at ${updated_at}</spam>
+					<spam>last update: ${new Date(updated_at).toDateString()}</spam>
 				</footer>
 			</div>
 			`
 		);
 	}
 
-	function userToHtml(user:UserObj){
-		function getBioHtml(bio: string| null){
+	function userToHtml(user: UserObj) {
+		function getBioHtml(bio: string | null) {
 			if (bio != null)
 				return `<main>${bio}</main>`;
 			else return '';
 		}
-		
-		const { name, avatar_url, login, location, bio, html_url} = user;
-		return(
+
+		const { name, avatar_url, login, location, bio, html_url } = user;
+		return (
 			`
 			<img src="${avatar_url}">
 			<span>
@@ -83,14 +115,19 @@ function getUser(user:UserNameObj){
 	}
 }
 
-function OnButtonClick(){
+function onSubmit(event: Event) {
+	event.preventDefault();
 
 	const usernameElement = document.getElementById('username') as HTMLInputElement
 	const username = usernameElement.value;
 	const user = { 'username': username };
 	getUser(user);
 }
-getUser({ 'username': 'eduardo-gomes' });
+//getUser({ 'username': 'eduardo-gomes' });
+getUser(undefined);
 
-const GetButton = document.querySelector('button') as HTMLButtonElement;
-GetButton.addEventListener('click', OnButtonClick);
+const GetForm = document.getElementById('search-form') as HTMLFormElement;
+GetForm.addEventListener('submit', onSubmit);
+
+
+export default getUser;
