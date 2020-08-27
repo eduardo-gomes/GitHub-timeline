@@ -27,6 +27,6 @@ jobs:
         KEY: ${{ secrets.SSHKEY }}
       with:
         source: "out/*"
-        target: "/var/www/html/GitHub-timeline"
+        target: "/var/www/GitHub-timeline"
         strip_components: 1
         overwrite: true

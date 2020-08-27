@@ -1,0 +1,2 @@
+# Don't count the demo data as code
+demo.ts linguist-vendored
