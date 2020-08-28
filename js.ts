@@ -4,7 +4,7 @@ import { reposJSON, userJSON } from './demo.js';
 const octokit = new Octokit();
 
 function getUser(user: UserNameObj) {
-	const ReposElement = document.getElementById('repos') as HTMLElement, UserElement = document.getElementById('user') as HTMLElement;
+	const ReposElement = document.getElementById('repos') as HTMLElement, UserContainerElement = document.getElementById('user-container') as HTMLElement;
 	function AddRepoHtmlToDiv(repoHtml: string) {
 		ReposElement.innerHTML += repoHtml;
 	}
@@ -12,7 +12,7 @@ function getUser(user: UserNameObj) {
 		ReposElement.innerHTML = "";
 	}
 	function SetUserHtmlToDiv(userHtml: string) {
-		UserElement.innerHTML = userHtml;
+		UserContainerElement.innerHTML = userHtml;
 	}
 	function compareRepoDate(a: RepoObj, b: RepoObj) {
 		const DateA = new Date(a.created_at);
@@ -48,7 +48,7 @@ function getUser(user: UserNameObj) {
 
 	function handleUserResponse(user: UserObj) {
 		SetUserHtmlToDiv(
-			userToHtml(user)
+			userToHtmlDiv(user)
 		);
 	}
 	function handleRepoResponse(RepoArray: Array<RepoObj>) {
@@ -93,7 +93,7 @@ function getUser(user: UserNameObj) {
 		);
 	}
 
-	function userToHtml(user: UserObj) {
+	function userToHtmlDiv(user: UserObj) {
 		function getBioHtml(bio: string | null) {
 			if (bio != null)
 				return `<main>${bio}</main>`;
@@ -103,6 +103,7 @@ function getUser(user: UserNameObj) {
 		const { name, avatar_url, login, location, bio, html_url } = user;
 		return (
 			`
+			<div id="user">
 			<img src="${avatar_url}">
 			<span>
 			<h2>${name}</h2>
@@ -110,6 +111,7 @@ function getUser(user: UserNameObj) {
 			<p>${location}</p>
 			</span>
 			${getBioHtml(bio)}
+			</div>
 			`
 		);
 	}

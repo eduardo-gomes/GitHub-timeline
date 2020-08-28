@@ -15,6 +15,7 @@ a{
 
 body{
 	font-family: 'Roboto', sans-serif;
+	text-overflow: ellipsis;
 	background-color: var(--main-bg-color);
 }
 
@@ -102,13 +103,22 @@ h1{
 	justify-content: space-between;
 	border-bottom: var(--border-thin-size) solid var(--repo-inner-border);
 }
+.repo-name a{
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
 
 .repo-name{
 	font-size: 1.6rem;
+	display: grid;
+	align-items: baseline;
+	grid-template-columns: auto max-content;
+	white-space: nowrap;
 }
 .repo-name span{
 	font-size: 1rem;
-	margin-left: 1rem;
+	margin-left: 0.4rem;
+	margin-right: 0.8rem;
 }
 
 #repos main{
