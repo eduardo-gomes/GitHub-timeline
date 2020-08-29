@@ -3,6 +3,45 @@ import { Octokit } from 'https://cdn.pika.dev/@octokit/rest';
 import { reposJSON, userJSON } from './demo.js';
 const octokit = new Octokit();
 
+function RepoObjToHtml(repo: RepoObj) {
+	function genHeader(name: string, url: string, created_at: string) {
+		const data = new Date(created_at);
+		const isFork = repo.fork ? "<span>is a fork</span>" : "";
+		return (`
+			<header>
+				<p class="repo-name"><a href="${html_url}">${name}</a>${isFork}</p>
+				<p class="repo-creation">Created: ${data.toDateString()}</p>
+			</header>
+		`);
+	}
+	function genDescription(desc: string | null) {
+		if (desc != null)
+			return `<main>${desc}</main>`;
+		else return '';
+	}
+	function genFooter(updated_at: string, language: string, stargazers_count: number) {
+		const languageHTML = language != null ? `<spam>language ${language}</spam>` : '';
+		return (
+			`<footer>
+				${languageHTML}
+				<spam>stars ${stargazers_count}</spam>
+				<spam>last update: ${new Date(updated_at).toDateString()}</spam>
+			</footer>`
+		);
+	}
+
+	const { created_at, name, description, language, updated_at, stargazers_count, html_url } = repo;
+	return (
+		`
+		<div>
+			${genHeader(name, html_url, created_at)}
+			${genDescription(description)}
+			${genFooter(updated_at, language, stargazers_count)}
+		</div>
+		`
+	);
+}
+
 function getUser(user: UserNameObj) {
 	const ReposElement = document.getElementById('repos') as HTMLElement, UserContainerElement = document.getElementById('user-container') as HTMLElement;
 	function AddRepoHtmlToDiv(repoHtml: string) {
@@ -33,7 +72,7 @@ function getUser(user: UserNameObj) {
 			console.log(value.data);
 			handleUserResponse(value.data);
 		}, function (value) {
-			console.log("can't find user")
+			alert("didn't recieve 200 from server")
 		})
 
 		const userRepos = octokit.repos.listForUser(user);
@@ -42,7 +81,7 @@ function getUser(user: UserNameObj) {
 			console.log(value.data);
 			handleRepoResponse(value.data);
 		}, function (value) {
-			console.log("can't find user")
+			console.log("can't find user's repos")
 		})
 	}
 
@@ -60,38 +99,6 @@ function getUser(user: UserNameObj) {
 		});
 	}
 
-	function RepoObjToHtml(repo: RepoObj) {
-		function genHeader(name: string, url: string, created_at: string) {
-			const data = new Date(created_at);
-			const isFork = repo.fork ? "<span>is a fork</span>" : "";
-			return (`
-				<header>
-					<p class="repo-name"><a href="${html_url}">${name}</a>${isFork}</p>
-					<p class="repo-creation">Created: ${data.toDateString()}</p>
-				</header>
-			`);
-		}
-		function genDescription(desc: string | null) {
-			if (desc != null)
-				return `<main>${desc}</main>`;
-			else return '';
-		}
-
-		const { created_at, name, description, language, updated_at, stargazers_count, html_url } = repo;
-		return (
-			`
-			<div>
-				${genHeader(name, html_url, created_at)}
-				${genDescription(description)}
-				<footer>
-					<spam>language ${language}</spam>
-					<spam>stars ${stargazers_count}</spam>
-					<spam>last update: ${new Date(updated_at).toDateString()}</spam>
-				</footer>
-			</div>
-			`
-		);
-	}
 
 	function userToHtmlDiv(user: UserObj) {
 		function getBioHtml(bio: string | null) {
