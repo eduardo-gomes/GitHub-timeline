@@ -41,6 +41,35 @@ function RepoObjToHtml(repo: RepoObj) {
 		`
 	);
 }
+function userObjToHtml(user: UserObj) {
+	function genBioHtml(bio: string | null) {
+		if (bio != null)
+			return `<main>${bio}</main>`;
+		else return '';
+	}
+	function genInfoSpan(name: string | null, html_url: string, login: string, location: string | null) {
+		const nameIfNotLogin = name != null ? name : login;
+		const locationHtml = location != null ? `<p>${location}</p>` : '';
+		return (
+			`<span>
+			<h2>${nameIfNotLogin}</h2>
+			<p><a href="${html_url}">${login}</a></p>
+			${locationHtml}
+			</span>`
+		);
+	}
+
+	const { name, avatar_url, login, location, bio, html_url } = user;
+	return (
+		`
+		<div id="user">
+		<img src="${avatar_url}">
+		${genInfoSpan(name, html_url, login, location)}
+		${genBioHtml(bio)}
+		</div>
+		`
+	);
+}
 
 function getUser(user: UserNameObj) {
 	const ReposElement = document.getElementById('repos') as HTMLElement, UserContainerElement = document.getElementById('user-container') as HTMLElement;
@@ -58,6 +87,11 @@ function getUser(user: UserNameObj) {
 		const DateB = new Date(b.created_at);
 		return DateB.getTime() - DateA.getTime();
 	}
+	function onError(value: any) {
+		console.log(value);
+		console.log("didn't recieve 200 from server");
+		alert("didn't recieve 200 from server");
+	}
 
 	ClearRepoDiv();
 	if (user == undefined) {
@@ -66,28 +100,22 @@ function getUser(user: UserNameObj) {
 		const repo: any = reposJSON;
 		handleRepoResponse(repo);
 	} else {
+		//TODO track remaining API requests
 		const userObj = octokit.users.getByUsername(user);
-		userObj.then(function (value) {
-			console.log("deu certo")
-			console.log(value.data);
-			handleUserResponse(value.data);
-		}, function (value) {
-			alert("didn't recieve 200 from server")
-		})
-
-		const userRepos = octokit.repos.listForUser(user);
-		userRepos.then(function (value) {
-			console.log("deu certo")
-			console.log(value.data);
-			handleRepoResponse(value.data);
-		}, function (value) {
-			console.log("can't find user's repos")
-		})
+		userObj.then(function (userResponse) {
+			console.log(userResponse.data);
+			handleUserResponse(userResponse.data);
+			const userRepos = octokit.repos.listForUser(user);
+			userRepos.then(function (reposResponse) {
+				console.log(reposResponse.data);
+				handleRepoResponse(reposResponse.data);
+			}, onError)
+		}, onError)
 	}
 
 	function handleUserResponse(user: UserObj) {
 		SetUserHtmlToDiv(
-			userToHtmlDiv(user)
+			userObjToHtml(user)
 		);
 	}
 	function handleRepoResponse(RepoArray: Array<RepoObj>) {
@@ -97,30 +125,6 @@ function getUser(user: UserNameObj) {
 				RepoObjToHtml(repo)
 			)
 		});
-	}
-
-
-	function userToHtmlDiv(user: UserObj) {
-		function getBioHtml(bio: string | null) {
-			if (bio != null)
-				return `<main>${bio}</main>`;
-			else return '';
-		}
-
-		const { name, avatar_url, login, location, bio, html_url } = user;
-		return (
-			`
-			<div id="user">
-			<img src="${avatar_url}">
-			<span>
-			<h2>${name}</h2>
-			<p><a href="${html_url}">${login}</a></p>
-			<p>${location}</p>
-			</span>
-			${getBioHtml(bio)}
-			</div>
-			`
-		);
 	}
 }
 
@@ -132,7 +136,7 @@ function onSubmit(event: Event) {
 	const user = { 'username': username };
 	getUser(user);
 }
-//getUser({ 'username': 'eduardo-gomes' });
+
 getUser(undefined);
 
 const GetForm = document.getElementById('search-form') as HTMLFormElement;
