@@ -1,5 +1,5 @@
 /// <reference path="import.d.ts" />
-import { Octokit } from 'https://cdn.pika.dev/@octokit/rest';
+import { Octokit } from 'https://cdn.skypack.dev/@octokit/rest';
 import { reposJSON, userJSON } from './demo.js';
 const octokit = new Octokit();
 
@@ -71,6 +71,17 @@ function userObjToHtml(user: UserObj) {
 	);
 }
 
+function rateFromHeader(header:ResponseHeader){
+	var rateLimit = header["x-ratelimit-limit"], rateRemaining = header["x-ratelimit-remaining"], rateReset = header["x-ratelimit-reset"];
+	console.log({rateLimit, rateRemaining, rateReset})
+	if (rateRemaining != undefined && rateLimit != undefined && rateReset != undefined){
+		const rateRemainingNum = Number(rateRemaining), rateLimitNum = Number(rateLimit);
+		const rateResetDate = new Date(Number(rateReset) * 1000)
+		if (rateRemainingNum < 57)
+			alert(`Remaining API requests(each search uses 2): ${rateRemainingNum}\nThis will reset to ${rateLimitNum} at ${rateResetDate.toLocaleString()}`)
+	}
+}
+
 function getUser(user: UserNameObj) {
 	const ReposElement = document.getElementById('repos') as HTMLElement, UserContainerElement = document.getElementById('user-container') as HTMLElement;
 	function AddRepoHtmlToDiv(repoHtml: string) {
@@ -94,6 +105,7 @@ function getUser(user: UserNameObj) {
 	}
 
 	ClearRepoDiv();
+	console.log('Get User: ' + user?.username)
 	if (user == undefined) {
 		const user: any = userJSON;
 		handleUserResponse(user);
@@ -108,6 +120,7 @@ function getUser(user: UserNameObj) {
 			const userRepos = octokit.repos.listForUser(user);
 			userRepos.then(function (reposResponse) {
 				console.log(reposResponse.data);
+				rateFromHeader(reposResponse.headers)
 				handleRepoResponse(reposResponse.data);
 			}, onError)
 		}, onError)
