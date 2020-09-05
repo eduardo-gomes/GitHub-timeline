@@ -5,8 +5,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Github Timeline</title>
-	<link rel="modulepreload" href="./js.js" />
-	<link rel="modulepreload" href="./demo.js" />
+	<link rel="modulepreload" href="./index.js" />
 	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap" rel="stylesheet">
 	<link rel="modulepreload" href="https://cdn.skypack.dev/@octokit/rest" />
 	<link rel="stylesheet" type="text/css" href="styles.css">
@@ -21,10 +20,13 @@
 			</label>
 			<button type="submit">Search</button>
 		</form>
+		<div id="remaining-requests"><p>Make a request to see remaining API requests</p></div>
 	</div>
 	<div id="user-container"></div>
-	<div id="repos"></div>
+	<div class="timeline">
+		<div id="repos"></div>
+	</div>
 </body>
-<script type="module" src="./js.js"></script>
+<script type="module" src="./index.js"></script>
 
 </html>
