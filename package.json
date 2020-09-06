@@ -4,7 +4,7 @@
   "description": "A simple app to generate an timeline of a GitHub user's repos",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc && mkdir -p out && cp index.html index.js js/*.js styles.css out/"
+    "build": "tsc && mkdir -p out out/js && cp index.html index.js styles.css out/ && cp js/*.js out/js/"
   },
   "repository": {
     "type": "git",

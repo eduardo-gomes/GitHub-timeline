@@ -6,6 +6,12 @@
 	--border-thin-size: 1px;
 	--border-size: 2px;
 	--border-radius: 20px;
+	--timeline-bar-color: white;
+	--timeline-circle-fill: white;
+	--timeline-circle-border: lightgreen;
+	--repo-width: 750px;
+	--timeline-bar-width: 35px;
+	--timeline-circle-diameter: 20px;
 }
 
 a{
@@ -19,7 +25,7 @@ body{
 	background-color: var(--main-bg-color);
 }
 
-body > *{
+h1, #search, #user-container, #repos, .timeline{
 	margin-left:auto;
 	margin-right:auto;
 	display: flex;
@@ -39,7 +45,7 @@ h1{
 }
 
 #user-container{
-	max-width: 600px;
+	max-width: calc(var(--repo-width) + var(--timeline-bar-width));
 }
 #user{
 	border-color: var(--border-color);
@@ -65,6 +71,7 @@ h1{
 	flex-direction: column;
 	align-items: flex-start;
 	margin: 1rem;
+	margin-left: 3rem;
 }
 
 #user p{
@@ -80,19 +87,37 @@ h1{
 	padding-left: 6px;
 }
 
-#repos{
-	max-width: 600px;
-	flex-direction: column;
+.timeline{
+	max-width: calc(var(--repo-width) + var(--timeline-bar-width));
 }
-#repos::after{
-  content: '';
-  position: absolute;
-  width: 6px;
-  background-color: white;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  margin-left: -3px;
+.timeline::before{
+	content: '';
+	position: relative;
+	width: 6px;
+	background-color: var(--timeline-bar-color);
+	top: 0;
+	bottom: 0;
+	left: calc(var(--timeline-bar-width) / 2);
+	margin-left: calc(var(--timeline-bar-width) / 2);
+}
+#repos > div::after{/*whem div is small it stay out of the bar*/
+	content: '';
+	position: absolute;
+	width: var(--timeline-circle-diameter);
+	height: var(--timeline-circle-diameter);
+	left: calc(-8px - var(--timeline-circle-diameter)/2 - var(--timeline-bar-width) * .5);;
+	background-color: var(--timeline-circle-fill);
+	border: 4px solid var(--timeline-circle-border);
+	top: 15px;
+	border-radius: 50%;
+	z-index: 1;
+	box-shadow: 0 0 15px #00000050;
+}
+#repos{
+	max-width: var(--repo-width);
+	flex-direction: column;
+	flex-basis: 100%;
+	margin-left: var(--timeline-bar-width);
 }
 #repos div{
 	margin-top: 10px;
@@ -101,6 +126,8 @@ h1{
 	border-radius: var(--border-radius);
 	border-width: var(--border-size);
 	border-style: solid;
+	position: relative;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 #repos div > *{
 	padding-left: 6px;
