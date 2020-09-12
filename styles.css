@@ -8,7 +8,7 @@
 	--border-radius: 20px;
 	--timeline-bar-color: white;
 	--timeline-circle-fill: white;
-	--timeline-circle-border: lightgreen;
+	--timeline-circle-border: #009196;
 	--repo-width: 750px;
 	--timeline-bar-width: 35px;
 	--timeline-circle-diameter: 20px;
@@ -201,6 +201,7 @@ h1{
 	padding-left: var(--overlay-padding-size);
 	padding-right: var(--overlay-padding-size);
 	background-color: var(--overlay-bg-color);
+	padding-top: 0.5rem;
 	display: flex;
 	justify-content: center;
 }

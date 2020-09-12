@@ -27,12 +27,13 @@ function getUser(user: UserNameObj) {
 	}
 	function onError(value: any) {
 		console.log(value);
-		if(value.status == 404){
+		if (value.status == 404) {
 			overlay.dispError("Username not found");
-			console.log("Username not found");
-		}else{
-			console.log("didn't recieve 200 from server");
-			alert("didn't recieve 200 from server");
+			console.warn("Username not found");
+		} else {
+			overlay.dispError("didn't recieve 200 from server");
+			console.warn("didn't recieve 200 from server");
+			console.log(value);
 		}
 	}
 	function handleUserResponse(user: UserObj) {
@@ -48,7 +49,7 @@ function getUser(user: UserNameObj) {
 			)
 		});
 	}
-	
+
 
 	overlay.dispLoading();
 	ClearRepoDiv();
@@ -73,7 +74,6 @@ function getUser(user: UserNameObj) {
 				handleRepoResponse(reposResponse.data);
 				overlay.hide();
 			}, onError)
-			
 		}, onError)
 	}
 }
