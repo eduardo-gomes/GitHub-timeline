@@ -6,9 +6,11 @@ const octokit = new Octokit();
 import RepoObjToHtml from "./repoToHTML.js";
 import UserObjToHtml from "./userToHTML.js";
 import rateFromHeader from "./rateToHTML.js";
+import Overlay from "./loadingOverlay.js";
 
 function getUser(user: UserNameObj) {
 	const ReposElement = document.getElementById('repos') as HTMLElement, UserContainerElement = document.getElementById('user-container') as HTMLElement;
+	const overlay = new Overlay;
 	function AddRepoHtmlToDiv(repoHtml: string) {
 		ReposElement.innerHTML += repoHtml;
 	}
@@ -25,8 +27,13 @@ function getUser(user: UserNameObj) {
 	}
 	function onError(value: any) {
 		console.log(value);
-		console.log("didn't recieve 200 from server");
-		alert("didn't recieve 200 from server");
+		if(value.status == 404){
+			overlay.dispError("Username not found");
+			console.log("Username not found");
+		}else{
+			console.log("didn't recieve 200 from server");
+			alert("didn't recieve 200 from server");
+		}
 	}
 	function handleUserResponse(user: UserObj) {
 		SetUserHtmlToDiv(
@@ -43,6 +50,7 @@ function getUser(user: UserNameObj) {
 	}
 	
 
+	overlay.dispLoading();
 	ClearRepoDiv();
 	console.log('Get User: ' + user?.username)
 	if (user == undefined) {
@@ -50,6 +58,7 @@ function getUser(user: UserNameObj) {
 		handleUserResponse(user);
 		const repo: any = reposJSON;
 		handleRepoResponse(repo);
+		overlay.hide();
 	} else {
 		//TODO track remaining API requests
 		const userObj = octokit.users.getByUsername(user);
@@ -62,6 +71,7 @@ function getUser(user: UserNameObj) {
 				console.log(reposResponse.data);
 				rateFromHeader(reposResponse.headers)
 				handleRepoResponse(reposResponse.data);
+				overlay.hide();
 			}, onError)
 			
 		}, onError)

@@ -12,6 +12,10 @@
 	--repo-width: 750px;
 	--timeline-bar-width: 35px;
 	--timeline-circle-diameter: 20px;
+	--overlay-bg-color: white;
+	--overlay-width: 20rem;
+	--overlay-border-size: 2rem;
+	--overlay-padding-size: calc(var(--overlay-border-size) / 2);
 }
 
 a{
@@ -176,4 +180,85 @@ h1{
 	align-items: center;
 	justify-content: space-evenly;
 	border-top: var(--border-thin-size) solid var(--repo-inner-border);
+}
+
+#overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	bottom: 0;
+	right: 0;
+	align-items: center;
+	background-color: rgba(0, 0, 0, 0.5);
+	z-index: 2;
+}
+
+#overlay > *{
+	width: var(--overlay-width);
+	padding-left: var(--overlay-padding-size);
+	padding-right: var(--overlay-padding-size);
+	background-color: var(--overlay-bg-color);
+	display: flex;
+	justify-content: center;
+}
+
+#overlay::before{
+	content: "";
+	width: calc(var(--overlay-width) + var(--overlay-border-size));
+	border-top-right-radius: var(--overlay-border-size);
+	border-top-left-radius: var(--overlay-border-size);
+	border-top-width: var(--overlay-border-size);
+	border-top-style: solid;
+	border-color: var(--overlay-bg-color);
+}
+
+#overlay::after{
+	content: "";
+	width: calc(var(--overlay-width) + var(--overlay-border-size));
+	border-bottom-right-radius: var(--overlay-border-size);
+	border-bottom-left-radius: var(--overlay-border-size);
+	border-bottom-width: var(--overlay-border-size);
+	border-bottom-style: solid;
+	border-color: var(--overlay-bg-color);
+}
+
+#overlay.hidden{
+	display: none;
+}
+
+.error .loader::after {
+	content: "\274c";
+	font-size: 5em;
+}
+
+.loader{
+	font-size: 0.75rem;
+	border-radius: 50%;
+	width: 7em;
+	height: 7em;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.loading .loader{
+	border: 0.75em solid lightgray;
+	border-top-color: aqua;
+	animation: spin 2s linear infinite;
+}
+
+.loading button{
+	display: none !important;
+}
+
+.error .loader {
+	border: 0.75em solid red;
+}
+
+@keyframes spin {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
 }
